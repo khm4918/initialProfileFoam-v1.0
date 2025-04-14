@@ -3,6 +3,7 @@ Custom blastFoam package to set equation-driven initial fields
 
 Fields are set using equation-defined regions in the createFields.H file. Make changes to this file according to the problem in question.
 After editing createFields.H, use wclean and wmake to re-install the package with the new equations defining initial fields.
+Example createFields files are located in the History directory.
 
 To apply the fields to a test case, first generate the mesh from the desired test case (e.g. using blockMesh).
 Then copy the 0, constant and system files from the desired test case here into initialProfileFoam.
