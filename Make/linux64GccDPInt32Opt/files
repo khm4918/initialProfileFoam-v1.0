@@ -1,0 +1,4 @@
+SOURCE += initialProfileFoam.C
+
+EXE = $(FOAM_USER_APPBIN)/initialProfileFoam
+

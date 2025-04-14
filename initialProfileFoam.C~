@@ -1,0 +1,94 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+License
+    This file is part of OpenFOAM.
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+Application
+    sonicFoam
+
+Description
+    Transient solver for trans-sonic/supersonic, laminar or turbulent flow
+    of a compressible gas.
+
+\*---------------------------------------------------------------------------*/
+
+#include "fvCFD.H"
+#include "upwind.H"
+
+//#include "Tuple2.H"
+
+#include "syncTools.H"
+#include "vectorList.H"
+#include "hexMatcher.H"
+#include "prismMatcher.H"
+#include "simpleControl.H"
+#include "scalarMatrices.H"
+#include "slicedSurfaceFields.H"
+#include "volPointInterpolation.H"
+#include "cyclicAMIPolyPatch.H"
+#include "cyclicAMILduInterface.H"
+
+#include "directionInterpolate.H"
+
+//#include "pimpleControl.H"
+
+
+//#include "psiChemistryCombustionModel.H"
+#include "multivariateScheme.H"
+//0.0 for others 1.0 for double mach
+#define eps_M   2.5
+//kpre  for precondition
+#define kpre    1.0
+//free stream mach number,   to specify when mach is small than 1.0
+#define Mapre   3.0
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+
+int main(int argc, char *argv[])
+{
+    #include "setRootCase.H"
+    #include "createTime.H"
+    #include "createMesh.H"
+    
+      Info<< "CreateMesh\n" << endl;
+      
+    #include "storeInformation.H"
+
+    #include "createFields.H"
+    #include "initContinuityErrs.H"
+    
+    #include "createTimeControls.H"
+
+ 
+    Info<< "End\n" << endl;
+
+    return 0;
+}
+
+
+// ************************************************************************* //
+
+
+
+
+
