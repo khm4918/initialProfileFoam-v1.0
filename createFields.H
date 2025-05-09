@@ -94,50 +94,152 @@
         ),
         mesh
     );
-    
-
 
  Info<< "Finish initialization field" << endl;
+
+//fluid boundary geometry params
+	scalar r0=2.29e-03;
+	scalar a0=0.1e-03;
+	int n = 16;
+
+//shock geometry params
+	scalar r_in=4.9e-03;
+	scalar r_out=5.1e-03;
+	
+//cavity outer circle radius
+	scalar r_cav=3.79e-03;
+
+//polygon vertex positions for cavity zero
+	std::vector<float> x_p0={0};
+	std::vector<float> y_p0={2.79e-03};
+	
+	std::vector<float> x_p1={0.39e-03};
+	std::vector<float> y_p1={2.96e-03};
+	
+	std::vector<float> x_p2={0.84e-03};
+	std::vector<float> y_p2={3.14e-03};
+	
+	std::vector<float> x_p3={1.42e-03};
+	std::vector<float> y_p3={3.51e-03};
+	
+	std::vector<float> x_p4={-1*x_p3[0]};
+	std::vector<float> y_p4={y_p3[0]};
+	
+	std::vector<float> x_p5={-1*x_p2[0]};
+	std::vector<float> y_p5={y_p2[0]};
+	
+	std::vector<float> x_p6={-1*x_p1[0]};
+	std::vector<float> y_p6={y_p1[0]};
+				
+//create vector array to store straight line equations
+	std::vector<std::vector<std::vector<float>>> lines; 
+
+//rotation matrix params
+	scalar rot=M_PI*2/(n/2);
+				
+//calculate subsequent cavity positions via vertex rotation
+	for (int i=1; i<int(n/2 + 1); i++) {
+		
+		x_p0.push_back(x_p0[0]*Foam::cos(rot*i)-y_p0[0]*Foam::sin(rot*i));
+		y_p0.push_back(x_p0[0]*Foam::sin(rot*i)+y_p0[0]*Foam::cos(rot*i));
+		
+		x_p1.push_back(x_p1[0]*Foam::cos(rot*i)-y_p1[0]*Foam::sin(rot*i));
+		y_p1.push_back(x_p1[0]*Foam::sin(rot*i)+y_p1[0]*Foam::cos(rot*i));
+		
+		x_p2.push_back(x_p2[0]*Foam::cos(rot*i)-y_p2[0]*Foam::sin(rot*i));
+		y_p2.push_back(x_p2[0]*Foam::sin(rot*i)+y_p2[0]*Foam::cos(rot*i));
+		
+		x_p3.push_back(x_p3[0]*Foam::cos(rot*i)-y_p3[0]*Foam::sin(rot*i));
+		y_p3.push_back(x_p3[0]*Foam::sin(rot*i)+y_p3[0]*Foam::cos(rot*i));
+
+		x_p4.push_back(x_p4[0]*Foam::cos(rot*i)-y_p4[0]*Foam::sin(rot*i));
+		y_p4.push_back(x_p4[0]*Foam::sin(rot*i)+y_p4[0]*Foam::cos(rot*i));		
+		
+		x_p5.push_back(x_p5[0]*Foam::cos(rot*i)-y_p5[0]*Foam::sin(rot*i));
+		y_p5.push_back(x_p5[0]*Foam::sin(rot*i)+y_p5[0]*Foam::cos(rot*i));		
+		
+		x_p6.push_back(x_p6[0]*Foam::cos(rot*i)-y_p6[0]*Foam::sin(rot*i));
+		y_p6.push_back(x_p6[0]*Foam::sin(rot*i)+y_p6[0]*Foam::cos(rot*i));
+
+//calculate equations of lines between neighbouring points				
+			lines.push_back({
+					{(y_p1[i-1]-y_p0[i-1])/(x_p1[i-1]-x_p0[i-1]),y_p1[i-1]-(y_p1[i-1]-y_p0[i-1])/(x_p1[i-1]-x_p0[i-1])*x_p1[i-1]}, //L0
+					{(y_p2[i-1]-y_p1[i-1])/(x_p2[i-1]-x_p1[i-1]),y_p2[i-1]-(y_p2[i-1]-y_p1[i-1])/(x_p2[i-1]-x_p1[i-1])*x_p2[i-1]}, //L1
+					{(y_p3[i-1]-y_p2[i-1])/(x_p3[i-1]-x_p2[i-1]),y_p3[i-1]-(y_p3[i-1]-y_p2[i-1])/(x_p3[i-1]-x_p2[i-1])*x_p3[i-1]}, //L2
+					{(y_p5[i-1]-y_p4[i-1])/(x_p5[i-1]-x_p4[i-1]),y_p5[i-1]-(y_p5[i-1]-y_p4[i-1])/(x_p5[i-1]-x_p4[i-1])*x_p5[i-1]}, //L3
+					{(y_p6[i-1]-y_p5[i-1])/(x_p6[i-1]-x_p5[i-1]),y_p6[i-1]-(y_p6[i-1]-y_p5[i-1])/(x_p6[i-1]-x_p5[i-1])*x_p6[i-1]}, //L4
+					{(y_p0[i-1]-y_p6[i-1])/(x_p0[i-1]-x_p6[i-1]),y_p0[i-1]-(y_p0[i-1]-y_p6[i-1])/(x_p0[i-1]-x_p6[i-1])*x_p0[i-1]}  //L5
+					});
+					
+		}
 
  //low order initialization
           forAll(p,cellI){
     scalar xx=mesh.C()[cellI].x();
-    scalar yy=mesh.C()[cellI].y();
+    scalar yy=mesh.C()[cellI].y();					
 	
-//fluid boundary geometry params
-	scalar y_pos=0;
-	scalar lam=0.9e-03;
-	scalar a0=0.1e-03;
-
-//shock geometry params
-	scalar y_top=-3.9e-03;
-	scalar y_bot=-4.1e-03;
-
-					//perturbed fluid-gas boundary
-                    if(yy>=y_pos+a0*(Foam::cos((2*M_PI)/lam*xx))){    //Foam::cos()
+					//radial perturbation to fluid-gas boundary
+                    if((xx*xx+yy*yy)<=(r0-a0*Foam::cos(n*Foam::atan(yy/xx)))*(r0-a0*Foam::cos(n*Foam::atan(yy/xx)))
+					
+				
+					//outer cavity circle
+					|| (xx*xx+yy*yy<=r_cav*r_cav
+					
+					and (
+					
+						//cavity zero
+						   (yy>=lines[0][0][0]*xx+lines[0][0][1] and yy>=lines[0][1][0]*xx+lines[0][1][1] and yy>=lines[0][2][0]*xx+lines[0][2][1] and yy>=lines[0][3][0]*xx+lines[0][3][1] and yy>=lines[0][4][0]*xx+lines[0][4][1] and yy>=lines[0][5][0]*xx+lines[0][5][1])
+					
+						//cavity one
+						|| (yy>=lines[1][0][0]*xx+lines[1][0][1] and yy>=lines[1][1][0]*xx+lines[1][1][1] and yy>=lines[1][2][0]*xx+lines[1][2][1] and yy>=lines[1][3][0]*xx+lines[1][3][1] and yy>=lines[1][4][0]*xx+lines[1][4][1] and yy>=lines[1][5][0]*xx+lines[1][5][1])
+				
+						//cavity two
+						|| (yy<=lines[2][0][0]*xx+lines[2][0][1] and yy<=lines[2][1][0]*xx+lines[2][1][1] and yy<=lines[2][2][0]*xx+lines[2][2][1] and yy>=lines[2][3][0]*xx+lines[2][3][1] and yy>=lines[2][4][0]*xx+lines[2][4][1] and yy>=lines[2][5][0]*xx+lines[2][5][1])
+				
+						//cavity three
+						|| (yy<=lines[3][0][0]*xx+lines[3][0][1] and yy<=lines[3][1][0]*xx+lines[3][1][1] and yy<=lines[3][2][0]*xx+lines[3][2][1] and yy<=lines[3][3][0]*xx+lines[3][3][1] and yy<=lines[3][4][0]*xx+lines[3][4][1] and yy<=lines[3][5][0]*xx+lines[3][5][1])
+					
+						//cavity four	
+						|| (yy<=lines[4][0][0]*xx+lines[4][0][1] and yy<=lines[4][1][0]*xx+lines[4][1][1] and yy<=lines[4][2][0]*xx+lines[4][2][1] and yy<=lines[4][3][0]*xx+lines[4][3][1] and yy<=lines[4][4][0]*xx+lines[4][4][1] and yy<=lines[4][5][0]*xx+lines[4][5][1])
+					
+						//cavity five
+						|| (yy<=lines[5][0][0]*xx+lines[5][0][1] and yy<=lines[5][1][0]*xx+lines[5][1][1] and yy<=lines[5][2][0]*xx+lines[5][2][1] and yy<=lines[5][3][0]*xx+lines[5][3][1] and yy<=lines[5][4][0]*xx+lines[5][4][1] and yy<=lines[5][5][0]*xx+lines[5][5][1])
+					
+						//cavity six
+						|| (yy>=lines[6][0][0]*xx+lines[6][0][1] and yy>=lines[6][1][0]*xx+lines[6][1][1] and yy>=lines[6][2][0]*xx+lines[6][2][1] and yy<=lines[6][3][0]*xx+lines[6][3][1] and yy<=lines[6][4][0]*xx+lines[6][4][1] and yy<=lines[6][5][0]*xx+lines[6][5][1])
+					
+						//cavity seven
+						|| (yy>=lines[7][0][0]*xx+lines[7][0][1] and yy>=lines[7][1][0]*xx+lines[7][1][1] and yy>=lines[7][2][0]*xx+lines[7][2][1] and yy>=lines[7][3][0]*xx+lines[7][3][1] and yy>=lines[7][4][0]*xx+lines[7][4][1] and yy>=lines[7][5][0]*xx+lines[7][5][1])
+						
+						)
+						
+					))
+						
+					{    //Foam::cos()
 
                        alpha1[cellI]=0;
 					  
 					}else{
 						
-						alpha1[cellI]=1.0;
+						alpha1[cellI]=1.0; 
 					
 					//shock annulus in water
-                    }if((y_bot<=yy)and(yy)<=y_top){    //Foam::cos()
+                    }if((r_in*r_in<=(xx*xx+yy*yy))and(xx*xx+yy*yy)<=r_out*r_out){    //Foam::cos()
 
 						p[cellI]=8.15e08;
 						rho1[cellI]=1200;						
-						U[cellI].y()=370.8;
+						U[cellI].x()=-(370.8/Foam::sqrt(xx*xx+yy*yy))*xx;
+						U[cellI].y()=-(370.8/Foam::sqrt(xx*xx+yy*yy))*yy;
 
                        }else{
                                            
                        p[cellI]=1.01e5;
 					   rho1[cellI]=1000;
+                       U[cellI].x()=0.0;
                        U[cellI].y()=0.0;
 					   
                        }
-					   
-                      U[cellI].x()=0.0;        
+        
                       T[cellI]=298.0;        
                       rho2[cellI]=1.293;
        
