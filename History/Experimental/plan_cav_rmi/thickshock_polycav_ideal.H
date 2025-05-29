@@ -118,29 +118,29 @@
 	scalar w = 1.8e-03;	
 	
 //polygon vertex positions for cavity zero. nw/2 shift is to find cavity farthest left within boundaries
-	std::vector<float> x_p0={0-(n*w)/2};
+	std::vector<double> x_p0={0-(n*w)/2};
 	scalar y_p0=-0.5e-03;
 	
-	std::vector<float> x_p1={0.3e-03-(n*w)/2};
+	std::vector<double> x_p1={0.3e-03-(n*w)/2};
 	scalar y_p1=-0.7e-03;
 	
-	std::vector<float> x_p2={0.6e-03-(n*w)/2};
+	std::vector<double> x_p2={0.6e-03-(n*w)/2};
 	scalar y_p2=-0.96e-03;
 	
-	std::vector<float> x_p3={0.9e-03-(n*w)/2};
+	std::vector<double> x_p3={0.9e-03-(n*w)/2};
 	scalar y_p3=-1.5e-03;
 	
-	std::vector<float> x_p4={-0.9e-03-(n*w)/2};
+	std::vector<double> x_p4={-0.9e-03-(n*w)/2};
 	scalar y_p4=y_p3;
 	
-	std::vector<float> x_p5={-0.6e-03-(n*w)/2};
+	std::vector<double> x_p5={-0.6e-03-(n*w)/2};
 	scalar y_p5=y_p2;
 	
-	std::vector<float> x_p6={-0.3e-03-(n*w)/2};
+	std::vector<double> x_p6={-0.3e-03-(n*w)/2};
 	scalar y_p6=y_p1;
 	
 //create vector array to store straight line equations
-	std::vector<std::vector<std::vector<float>>> lines; 
+	std::vector<std::vector<std::vector<double>>> lines; 
 	
 //calculate subsequent cavitiy positions via translation
 	for (int i=0; i<int(n+1); i++) {
