@@ -110,84 +110,11 @@
 	scalar a0=0.1e-03;
 
 //shock geometry params
-	scalar y_top=-3.75e-03;
-	scalar y_bot=-4.25e-03;
-	
-//cavity size params- number and width
-	scalar n = 2;
-	scalar w = 1.8e-03;	
-	
-//polygon vertex positions for cavity zero. nw/2 shift is to find cavity farthest left within boundaries
-	std::vector<double> x_p0={0-(n*w)/2};
-	scalar y_p0=-0.5e-03;
-	
-	std::vector<double> x_p1={0.3e-03-(n*w)/2};
-	scalar y_p1=-0.7e-03;
-	
-	std::vector<double> x_p2={0.6e-03-(n*w)/2};
-	scalar y_p2=-0.96e-03;
-	
-	std::vector<double> x_p3={0.9e-03-(n*w)/2};
-	scalar y_p3=-1.5e-03;
-	
-	std::vector<double> x_p4={-0.9e-03-(n*w)/2};
-	scalar y_p4=y_p3;
-	
-	std::vector<double> x_p5={-0.6e-03-(n*w)/2};
-	scalar y_p5=y_p2;
-	
-	std::vector<double> x_p6={-0.3e-03-(n*w)/2};
-	scalar y_p6=y_p1;
-	
-//create vector array to store straight line equations
-	std::vector<std::vector<std::vector<double>>> lines; 
-	
-//calculate subsequent cavitiy positions via translation
-	for (int i=0; i<int(n+1); i++) {
-		
-		x_p0.push_back(x_p0[i]+w);
-		x_p1.push_back(x_p1[i]+w);
-		x_p2.push_back(x_p2[i]+w);
-		x_p3.push_back(x_p3[i]+w);
-		x_p4.push_back(x_p4[i]+w);
-		x_p5.push_back(x_p5[i]+w);
-		x_p6.push_back(x_p6[i]+w);
-		
-//calculate equations of lines between neighbouring points				
-			lines.push_back({
-					{(y_p1-y_p0)/(x_p1[i]-x_p0[i]),y_p1-(y_p1-y_p0)/(x_p1[i]-x_p0[i])*x_p1[i]}, //L0
-					{(y_p2-y_p1)/(x_p2[i]-x_p1[i]),y_p2-(y_p2-y_p1)/(x_p2[i]-x_p1[i])*x_p2[i]}, //L1
-					{(y_p3-y_p2)/(x_p3[i]-x_p2[i]),y_p3-(y_p3-y_p2)/(x_p3[i]-x_p2[i])*x_p3[i]}, //L2
-					{(y_p5-y_p4)/(x_p5[i]-x_p4[i]),y_p5-(y_p5-y_p4)/(x_p5[i]-x_p4[i])*x_p5[i]}, //L3
-					{(y_p6-y_p5)/(x_p6[i]-x_p5[i]),y_p6-(y_p6-y_p5)/(x_p6[i]-x_p5[i])*x_p6[i]}, //L4
-					{(y_p0-y_p6)/(x_p0[i]-x_p6[i]),y_p0-(y_p0-y_p6)/(x_p0[i]-x_p6[i])*x_p0[i]}  //L5
-					});
-	
-	}
+	scalar y_top=-3.9e-03;
+	scalar y_bot=-4.1e-03;
 
-					//perturbed fluid-gas boundary and cavities
-                    if((yy>=y_pos+a0*(Foam::cos((2*M_PI)/lam*xx)))
-					
-					//cavity base y position
-					|| (yy>=y_p3
-					
-					and (
-					
-						//cavity zero
-						   (yy<=lines[0][0][0]*xx+lines[0][0][1] and yy<=lines[0][1][0]*xx+lines[0][1][1] and yy<=lines[0][2][0]*xx+lines[0][2][1] and yy<=lines[0][3][0]*xx+lines[0][3][1] and yy<=lines[0][4][0]*xx+lines[0][4][1] and yy<=lines[0][5][0]*xx+lines[0][5][1])
-					
-						//cavity one
-						|| (yy<=lines[1][0][0]*xx+lines[1][0][1] and yy<=lines[1][1][0]*xx+lines[1][1][1] and yy<=lines[1][2][0]*xx+lines[1][2][1] and yy<=lines[1][3][0]*xx+lines[1][3][1] and yy<=lines[1][4][0]*xx+lines[1][4][1] and yy<=lines[1][5][0]*xx+lines[1][5][1])
-				
-						//cavity two
-						|| (yy<=lines[2][0][0]*xx+lines[2][0][1] and yy<=lines[2][1][0]*xx+lines[2][1][1] and yy<=lines[2][2][0]*xx+lines[2][2][1] and yy<=lines[2][3][0]*xx+lines[2][3][1] and yy<=lines[2][4][0]*xx+lines[2][4][1] and yy<=lines[2][5][0]*xx+lines[2][5][1])
-						
-						)					
-				
-						
-					))
-					
-					{    //Foam::cos()
+					//perturbed fluid-gas boundary
+                    if(yy>=y_pos+a0*(Foam::cos((2*M_PI)/lam*xx))){    //Foam::cos()
 
                        alpha1[cellI]=0;
 					  
