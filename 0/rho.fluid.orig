@@ -20,25 +20,35 @@ internalField   uniform 1;
 
 boundaryField
 {
-    walls
+    symmetryX
     {
-        type            empty;
+        type            symmetryPlane;
     }
-
-	sides
+	
+	symmetryY
 	{
-		type			symmetry;
+		type			symmetryPlane;
 	}
 
-	ends
+	innerWall
 	{
 		type	zeroGradient;
 	}
-	
-    defaultFaces
+
+	outerWall
+	{
+		type	zeroGradient;
+	}
+
+    front
     {
         type            empty;
     }
+	
+	back
+	{
+		type	empty;
+	}
 }
 
 // ************************************************************************* //

@@ -99,7 +99,7 @@
 
 //fluid boundary geometry params
 	scalar r0=2.29e-03;
-	scalar a0=0.05e-03;
+	scalar a0=0.2e-03;
 	int n = 16;
 
 //shock geometry params

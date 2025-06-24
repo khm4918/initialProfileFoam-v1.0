@@ -40,18 +40,19 @@ laplacianSchemes
 
 interpolationSchemes
 {
-    default             linear;
-    reconstruct(alpha)  quadraticMUSCL vanLeer;
-    reconstruct(rho)    quadraticMUSCL vanLeer;
-    reconstruct(U)      quadraticMUSCL vanLeer;
-    reconstruct(e)      quadraticMUSCL vanLeer;
-    reconstruct(p)      quadraticMUSCL vanLeer;
-    reconstruct(speedOfSound) quadraticMUSCL vanLeer;
+	default		linear;
+    reconstruct(alpha)         quadraticMUSCL vanLeer;
+    reconstruct(rho)           quadraticMUSCL vanLeer;
+    reconstruct(U)             quadraticMUSCL vanLeer;
+    reconstruct(e)             quadraticMUSCL vanLeer;
+    reconstruct(p)             quadraticMUSCL vanLeer;
+    reconstruct(speedOfSound)  quadraticMUSCL vanLeer;
 }
 
 snGradSchemes
 {
     default         corrected;
 }
+
 
 // ************************************************************************* //

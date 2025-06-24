@@ -15,7 +15,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 1024; // this is number of proc
+numberOfSubdomains 128; // this is number of proc
 
 method         scotch; // automatic
 
