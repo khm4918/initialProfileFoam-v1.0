@@ -107,14 +107,14 @@
 //fluid boundary geometry params
 	scalar r0=2.29e-03;
 	scalar a0=0.1e-03;
-	scalar n = 16;
+	scalar n = 8;
 
 //shock geometry params
 	scalar r_in=4.75e-03;
 	scalar r_out=5.25e-03;
 
 					//radial perturbation to fluid-gas boundary
-                    if((xx*xx+yy*yy)<=(r0+a0*Foam::cos(n*Foam::atan(yy/xx)))*(r0+a0*Foam::cos(n*Foam::atan(yy/xx)))){    //Foam::cos()
+                    if((xx*xx+yy*yy)<=(r0-a0*Foam::cos(n*Foam::atan(yy/xx)))*(r0-a0*Foam::cos(n*Foam::atan(yy/xx)))){    //Foam::cos()
 
                        alpha1[cellI]=0;
 					  
